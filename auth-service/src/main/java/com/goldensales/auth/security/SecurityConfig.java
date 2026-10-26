@@ -33,13 +33,48 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .httpBasic(basic -> basic.disable())
+                .requestMatchers(
+        org.springframework.http.HttpMethod.POST,
+        "/api/sales/*/payments")
+.hasRole("ADMIN")
+
+.requestMatchers(
+        org.springframework.http.HttpMethod.GET,
+        "/api/customers/*/payments",
+        "/api/customers/*/debt")
+.hasRole("ADMIN") a
                 .formLogin(form -> form.disable())
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/actuator/health", "/actuator/health/**").permitAll()
                         .requestMatchers(HttpMethod.POST,
-                                "/api/auth/register", "/api/auth/login").permitAll()
+                                "/api/auth/register", "/api/auth/login").
+                                permitAll()
+                                .requestMatchers(
+        org.springframework.http.HttpMethod.POST,
+        "/api/sales/*/payments")
+.hasRole("ADMIN")
+
+.requestMatchers(
+        org.springframework.http.HttpMethod.GET,
+        "/api/customers/*/payments",
+        "/api/customers/*/debt")
+.hasRole("ADMIN")
+
+.requestMatchers(
+        org.springframework.http.HttpMethod.GET,
+        "/api/customers/debts")
+.hasRole("ADMIN")
+
+.requestMatchers(
+        org.springframework.http.HttpMethod.POST,
+        "/api/payments/*/refunds")
+.hasRole("ADMIN")
+.requestMatchers(HttpMethod.GET, "/api/payments/*/refunds")
+.hasRole("ADMIN")
+
+
                         .anyRequest().authenticated())
                 .addFilterBefore(
                         jwtAuthenticationFilter,
