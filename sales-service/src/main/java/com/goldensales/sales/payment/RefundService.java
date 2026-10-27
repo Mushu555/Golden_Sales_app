@@ -92,6 +92,19 @@ public class RefundService {
     }
 
     @Transactional(readOnly = true)
+public java.util.List<RefundResponse> getCustomerRefunds(
+        Long customerId, Jwt jwt) {
+
+    requireAdmin(jwt);
+
+    return refundRepository
+            .findByCustomerIdOrderByCreatedAtDesc(customerId)
+            .stream()
+            .map(RefundResponse::from)
+            .toList();
+}
+
+    @Transactional(readOnly = true)
 public java.util.List<RefundResponse> getRefundsByPayment(
         Long paymentId, Jwt jwt) {
 

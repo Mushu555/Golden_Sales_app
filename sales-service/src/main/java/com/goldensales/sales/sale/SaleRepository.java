@@ -54,6 +54,23 @@ Optional<Sale> findByIdForUpdate(@Param("id") Long id);
             @Param("isAdmin") boolean isAdmin,
             @Param("userId") Long userId);
 
+
+
+            @Query("""
+        SELECT new com.goldensales.sales.report.SalesAuditResponse(
+            s.id,
+            s.saleNumber,
+            s.customerId,
+            s.totalAmount,
+            s.status,
+            s.createdBy,
+            s.createdAt
+        )
+        FROM Sale s
+        ORDER BY s.createdAt DESC
+        """)
+Page<SalesAuditResponse> findSalesAudit(Pageable pageable);
+
     @Query(value = """
             SELECT
                 CAST(created_at AT TIME ZONE 'UTC' AS date) AS "date",

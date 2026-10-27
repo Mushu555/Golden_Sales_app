@@ -12,6 +12,8 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
+// import org.springframework.web.bind.annotation.GetMapping;
+// import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -40,6 +42,14 @@ public class PaymentController {
             @AuthenticationPrincipal Jwt jwt) {
         return paymentService.getCustomerPayments(customerId, jwt);
     }
+
+    @GetMapping("/sales/{saleId}/payments")
+public java.util.List<PaymentResponse> getSalePayments(
+        @PathVariable Long saleId,
+        @AuthenticationPrincipal Jwt jwt) {
+
+    return paymentService.getSalePayments(saleId, jwt);
+}
 
     @GetMapping("/customers/{customerId}/debt")
     public CustomerDebtResponse getCustomerDebt(

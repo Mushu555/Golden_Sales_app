@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.androidkotlinstarter"
+    namespace = "com.goldensales.app"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.example.androidkotlinstarter"
+        applicationId = "com.goldensales.app"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
@@ -46,4 +46,10 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview:1.8.3")
 
     debugImplementation("androidx.compose.ui:ui-tooling:1.8.3")
+    // Navigation
+implementation("androidx.navigation:navigation-compose:2.9.5")
+
+// ViewModel
+implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.4")
+implementation("androidx.lifecycle:lifecycle-runtime-compose:2.9.4")
 }

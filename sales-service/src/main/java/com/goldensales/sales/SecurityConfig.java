@@ -69,7 +69,8 @@ public class SecurityConfig {
                                 "/actuator/health",
                                 "/actuator/health/**")
                         .permitAll()
-
+.requestMatchers(HttpMethod.GET, "/api/sales/export")
+.hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/sales/**")
                         .hasAnyRole("USER", "ADMIN")
 
@@ -80,7 +81,12 @@ public class SecurityConfig {
                                 HttpMethod.PATCH, "/api/sales/*/cancel")
                         .hasRole("ADMIN")
 
-                        .anyRequest().authenticated())
+                        .requestMatchers(HttpMethod.GET, "/api/sales/*/payments")
+.hasRole("ADMIN")
+.requestMatchers(HttpMethod.GET, "/api/customers/*/refunds")
+.hasRole("ADMIN")
+.requestMatchers(HttpMethod.GET, "/api/sales/audit")
+.hasRole("ADMIN").anyRequest().authenticated())
                 .oauth2ResourceServer(oauth -> oauth
                         .jwt(jwt -> jwt
                                 .jwtAuthenticationConverter(

@@ -8,6 +8,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import com.goldensales.sales.sale.SaleRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -17,9 +21,11 @@ import java.util.List;
 public class SalesReportController {
 
     private final SalesReportService reportService;
+    private final SalesCsvExportService;
 
     public SalesReportController(SalesReportService reportService) {
         this.reportService = reportService;
+        this.SalesCsvExportService=salesCsvExportService;
     }
 
     @GetMapping("/summary")
@@ -51,4 +57,35 @@ public class SalesReportController {
 
         return reportService.getDailySales(from, to, jwt);
     }
+
+    @GetMapping("/audit")
+public Page<SalesAuditResponse> getSalesAudit(
+        @PageableDefault(size = 20, sort = "createdAt")
+        Pageable pageable) {
+
+    return saleRepository.findSalesAudit(pageable);
+}
+
+
+@GetMapping(value = "/export", produces = "text/csv")
+public org.springframework.http.ResponseEntity<byte[]> exportSalesCsv() {
+    byte[] csv = salesCsvExportService.exportSalesCsv();
+
+    return org.springframework.http.ResponseEntity.ok()
+            .header(
+                    org.springframework.http.HttpHeaders.CONTENT_DISPOSITION,
+                    "attachment; filename=\"sales-report.csv\"")
+            .body(csv);
+}
+
+    @GetMapping(value = "/export", produces = "text/csv")
+public org.springframework.http.ResponseEntity<byte[]> exportSalesCsv() {
+    byte[] csv = salesCsvExportService.exportSalesCsv();
+
+    return org.springframework.http.ResponseEntity.ok()
+            .header(
+                    org.springframework.http.HttpHeaders.CONTENT_DISPOSITION,
+                    "attachment; filename=\"sales-report.csv\"")
+            .body(csv);
+}
 }

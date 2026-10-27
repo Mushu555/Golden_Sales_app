@@ -69,12 +69,16 @@ public class PaymentService {
                     "Payment method must be CASH, CARD, UPI, BANK_TRANSFER, or OTHER");
         }
 
-        BigDecimal totalPaid =
-                paymentRepository.getTotalPaidForSale(saleId);
+        BigDecimal alreadyPaid =
+        paymentRepository.getTotalPaidForSale(saleId);
 
-        BigDecimal outstanding =
-                sale.getTotalAmount().subtract(totalPaid);
+BigDecimal alreadyRefunded =
+        refundRepository.getTotalRefundedForSale(saleId);
 
+BigDecimal netPaid = alreadyPaid.subtract(alreadyRefunded);
+
+BigDecimal outstanding =
+        sale.getTotalAmount().subtract(netPaid);
         if (outstanding.signum() <= 0) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
@@ -147,6 +151,24 @@ public CustomerDebtResponse getCustomerDebt(
             outstanding);
 }
 
+
+@Transactional(readOnly = true)
+public java.util.List<PaymentResponse> getSalePayments(
+        Long saleId, Jwt jwt) {
+
+    requireAdmin(jwt);
+
+    if (!saleRepository.existsById(saleId)) {
+        throw new ResponseStatusException(
+                HttpStatus.NOT_FOUND, "Sale not found");
+    }
+
+    return paymentRepository
+            .findBySaleIdOrderByCreatedAtDesc(saleId)
+            .stream()
+            .map(PaymentResponse::from)
+            .toList();
+}
 
 
 @Transactional(readOnly = true)

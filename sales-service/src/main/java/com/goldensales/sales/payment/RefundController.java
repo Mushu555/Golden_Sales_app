@@ -28,6 +28,14 @@ public class RefundController {
         return refundService.recordRefund(paymentId, request, jwt);
     }
 
+    @GetMapping("/customers/{customerId}/refunds")
+public java.util.List<RefundResponse> getCustomerRefunds(
+        @PathVariable Long customerId,
+        @AuthenticationPrincipal Jwt jwt) {
+
+    return refundService.getCustomerRefunds(customerId, jwt);
+}
+
     @GetMapping("/{paymentId}/refunds")
 public java.util.List<RefundResponse> getRefunds(
         @PathVariable Long paymentId,

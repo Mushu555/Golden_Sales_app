@@ -29,4 +29,12 @@ public interface RefundRepository extends JpaRepository<Refund, Long> {
             """)
     BigDecimal getTotalRefundedForCustomer(
             @Param("customerId") Long customerId);
+
+        @Query("""
+        SELECT COALESCE(SUM(r.amount), 0)
+        FROM Refund r
+        WHERE r.saleId = :saleId
+        """)
+BigDecimal getTotalRefundedForSale(
+        @Param("saleId") Long saleId);
 }
